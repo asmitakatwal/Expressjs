@@ -26,17 +26,30 @@ const lotteryParticipants=[
 ]
 
 app.get('/users/:name', (req, res) => {
- // res.send('Hello Everyone')
- //console.log(req.params.name)
- lotteryParticipants.filter((item,index)=>{
-if(req.params.name === item.name && isWinner===true){
-  res.send("congrats you won")
-} else if(req.params.name != item.name){
-  res.send("You are not participant")
-}else{
-  res.send("better luck next time")
+ 
+const participantArr=lotteryParticipants.filter((item,index)=>{
+  if(item.name === req.params.name){
+    return item
+  }
+})
 
-}
+ const winnerArr = lotteryParticipants.filter((item,index)=>{
+if(req.params.name === item.name && item.isWinner===true){
+  return item
+} 
+ })
+ let winnerMsg=""
+ if(participantArr.length> 0 && winnerArr.length==0){
+  winnerMsg="btter luck next time"
+ }
+ else if(winnerArr.length> 0){
+  winnerMsg="congrats you won"
+ }else{
+  winnerMsg="You are not participant"
+ }
+ res.json({
+  name:req.params.name,
+  message:winnerMsg
  })
 
 })
